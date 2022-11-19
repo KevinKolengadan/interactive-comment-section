@@ -1,0 +1,72 @@
+<div class="message-container" *ngIf="message">
+  <div class="voting-section large-display">
+    <ng-container [ngTemplateOutlet]="votingSection"></ng-container>
+  </div>
+  <div class="message-section">
+    <div class="message-header">
+      <div class="left">
+        <div class="user-profile">
+          <img [src]="'assets/'+message.user.image.png"  alt="User Profile Image">
+        </div>
+        <div class="user-name">{{message.user.username}}</div>
+        <div class="you" *ngIf="(isCurrentUser(message.user.username) | async)">YOU</div>
+        <div class="message-time">{{message.createdAt | timeAge}}</div>
+      </div>
+
+      <div class="message-action large-display">
+        <ng-container [ngTemplateOutlet]="messageActions"></ng-container>
+      </div>
+    </div>
+    <div class="message-body" *ngIf="!editToggle">
+<!--      <span class="reply-to">@{{message.replyingTo}}</span>-->
+      <span class="message-text">{{message.content}}</span>
+    </div>
+    <div *ngIf="editToggle">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Add a comment</mat-label>
+        <textarea matInput placeholder="Enter Message" [rows]="4" [(ngModel)]="editMessage"></textarea>
+      </mat-form-field>
+      <div class="update">
+        <button mat-flat-button color="primary" (click)="updateMessage()">UPDATE</button>
+      </div>
+    </div>
+    <div class="mobile-display">
+      <div class="voting-section">
+        <ng-container [ngTemplateOutlet]="votingSection"></ng-container>
+      </div>
+      <div class="message-action">
+        <ng-container [ngTemplateOutlet]="messageActions"></ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #messageActions>
+  <div *ngIf="message">
+    <div class="action-button" *ngIf="!(isCurrentUser(message.user.username) | async)" (click)="reply()">
+      <mat-icon aria-label="Reply" color="primary" [fontIcon]="'reply'"></mat-icon>
+      Reply
+    </div>
+    <div class="inline-flex" *ngIf="(isCurrentUser(message.user.username) | async)">
+      <div class="action-button warn" (click)="delete()" *ngIf="editToggle">
+        <mat-icon aria-label="Edit" color="warn" [fontIcon]="'delete'"></mat-icon>
+        Delete
+      </div>
+      <div class="action-button" (click)="edit()">
+        <mat-icon aria-label="Edit" color="primary" [fontIcon]="'edit'"></mat-icon>
+        Edit
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #votingSection>
+  <div class="container" *ngIf="message">
+    <div>
+      <mat-icon class="upvote" [ngClass]="{'voted': message.currentUserUpvoted}" aria-label="Upvote" color="primary" [fontIcon]="'add'" (click)="upvoteMessage(message.id)"></mat-icon>
+    </div>
+    <div>{{message.score}}</div>
+    <div>
+      <mat-icon class="downvote" [ngClass]="{'voted': message.currentUserDownvoted}" aria-label="Downvote" color="primary" [fontIcon]="'remove'" (click)="downvoteMessage(message.id)"></mat-icon>
+    </div>
+  </div>
+</ng-template>

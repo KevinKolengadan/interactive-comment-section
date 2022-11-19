@@ -1,0 +1,15 @@
+<div *ngIf="(comments$ | async) as comments">
+  <div class="comment-container" *ngFor="let comment of comments">
+    <message [message]="comment" [parentComment]="comment"></message>
+    <div class="position-relative" *ngIf="comment.replies.length>0">
+      <div class="reply-vertical-line">
+        <div></div>
+      </div>
+      <div class="reply-container">
+        <div class="comment-container"  *ngFor="let reply of comment.replies">
+          <message [message]="reply" [parentComment]="comment"></message>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

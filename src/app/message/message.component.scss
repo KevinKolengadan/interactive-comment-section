@@ -1,0 +1,92 @@
+.message-container {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  grid-gap: 10px;
+  .voting-section{
+    text-align: center;
+    div {
+      margin: 10px 0;
+    }
+    .upvote, .downvote {
+      color: #3f51b5;
+      cursor: pointer;
+      &.voted {
+        background: #3f51b5;
+        color: white;
+      }
+    }
+  }
+  .message-action {
+    float: right;
+    align-self: center;
+  }
+  .message-section {
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+    }
+    .message-header .left {
+      display: inline-flex;
+      align-items: center;
+      .user-profile {
+        img {
+          height: 50px;
+        }
+      }
+      .message-time {
+        color: #BABABA;
+      }
+      .user-name, .message-time {
+        margin: 0 10px;
+      }
+      .you {
+        background: #585EFF;
+        color: ghostwhite;
+        padding: 0 5px;
+        border-radius: 3px;
+      }
+    }
+  }
+}
+.action-button {
+  color: #3f51b5;
+  cursor: pointer;
+  margin: 0 10px;
+  &.warn {
+    color: #f44336;
+  }
+  mat-icon {
+    vertical-align: bottom;
+  }
+}
+.mobile-display {
+  display: none;
+}
+@media (max-width: 600px) {
+  .message-container {
+    grid-template-columns: 1fr;
+    .voting-section.large-display {
+      display: none;
+    }
+    .message-action.large-display {
+      display: none;
+    }
+  }
+  .mobile-display {
+    display: flex;
+    justify-content: space-between;
+    .voting-section {
+      .container {
+        display: flex;
+        margin: 0 !important;
+        grid-gap: 20px;
+        div {
+          margin: 10px 0 0;
+        }
+      }
+    }
+  }
+}

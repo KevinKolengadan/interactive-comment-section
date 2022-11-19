@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import {CommentService} from "./shared/service/comment.service";
+import {Store} from "@ngrx/store";
+import {AppState} from "./shared/state/app-state";
 
 @Component({
   selector: 'app-root',
@@ -6,5 +9,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'interactive-comment-section';
+
+  constructor(
+    public store: Store<AppState>,
+    private commentService: CommentService
+  ) {
+    this.commentService.initializeComments();
+  }
 }
