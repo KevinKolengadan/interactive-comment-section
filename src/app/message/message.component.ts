@@ -6,6 +6,8 @@ import {AppState} from "../shared/state/app-state";
 import {isCurrentUsername} from "../shared/state/user/user-selector";
 import {Observable} from "rxjs";
 import {CommentService} from "../shared/service/comment.service";
+import {DeleteDialog} from "../shared/dialog/delete-dialog/delete-dialog";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'message',
@@ -18,9 +20,13 @@ export class MessageComponent implements OnInit {
 
   editMessage: string = '';
   editToggle = false;
+  showReplyComment = false;
+  showReplyReply = false;
+  ReplyModal?: ReplyModal;
 
   constructor(
     private store: Store<AppState>,
+    private dialog: MatDialog,
     private commentService: CommentService
   ) { }
 
@@ -39,9 +45,6 @@ export class MessageComponent implements OnInit {
     this.commentService.downvoteMessage(messageId);
   }
 
-  reply() {
-
-  }
 
   edit() {
     if(this.editToggle) {
@@ -53,11 +56,33 @@ export class MessageComponent implements OnInit {
     }
   }
 
-  delete() {
+  delete(messageId: number) {
+    const dialogRef = this.dialog.open(DeleteDialog, {
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.commentService.deleteMessage(messageId);
+      }
+    });
   }
 
-  updateMessage() {
+  updateMessage(messageId: number) {
+    this.commentService.updateMessage(messageId, this.editMessage);
+  }
 
+  reply(message: CommentModel | ReplyModal, parentComment: CommentModel) {
+    if(this.showReplyComment || this.showReplyReply) {
+      this.showReplyComment = false;
+      this.showReplyReply = false;
+    } else {
+      if(message.id == parentComment.id) {
+        this.showReplyReply = false;
+        this.showReplyComment = true;
+      } else {
+        this.showReplyComment = false;
+        this.showReplyReply = true;
+      }
+    }
   }
 }

@@ -17,3 +17,22 @@ body {
 .inline-flex {
   display: inline-flex;
 }
+
+.justify-center {
+  justify-content: center;
+}
+
+.reply-vertical-line {
+  display: inline-block;
+  position: absolute;
+  height: 100%;
+  left: 20px;
+  margin: 10px 0;
+  div {
+    border-left: 1px solid #CDCEDA;
+    height: calc( 100% - 10px );
+  }
+}
+.reply-container {
+  margin: 10px 0 10px 40px;
+}

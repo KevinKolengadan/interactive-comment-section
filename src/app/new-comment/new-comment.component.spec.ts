@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CommentsComponent } from './comments.component';
-import {provideMockStore} from "@ngrx/store/testing";
+import { NewCommentComponent } from './new-comment.component';
 import {AppState} from "../shared/state/app-state";
-import {NewCommentComponent} from "../new-comment/new-comment.component";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {provideMockStore} from "@ngrx/store/testing";
+import {CommentService} from "../shared/service/comment.service";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {FormsModule} from "@angular/forms";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
-describe('CommentsComponent', () => {
-  let component: CommentsComponent;
-  let fixture: ComponentFixture<CommentsComponent>;
+describe('NewCommentComponent', () => {
+  let component: NewCommentComponent;
+  let fixture: ComponentFixture<NewCommentComponent>;
   const initialState: AppState = {
     user: {
       "image": {
@@ -21,24 +21,24 @@ describe('CommentsComponent', () => {
     },
     comments: []
   }
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CommentsComponent,
-        NewCommentComponent
+      declarations: [ NewCommentComponent ],
+      providers: [
+        provideMockStore({initialState}),
+        CommentService
       ],
       imports: [
         BrowserAnimationsModule,
         MatFormFieldModule,
         MatInputModule,
         FormsModule
-      ],
-      providers: [
-        provideMockStore({initialState}),
       ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CommentsComponent);
+    fixture = TestBed.createComponent(NewCommentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

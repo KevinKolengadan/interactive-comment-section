@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Store} from "@ngrx/store";
 import {AppState} from "../shared/state/app-state";
-import {Observable} from "rxjs";
+import {map, Observable} from "rxjs";
 import {CommentModel} from "../shared/model/comment.model";
 import {selectComments} from "../shared/state/comments/comment-selector";
 
@@ -16,7 +16,7 @@ export class CommentsComponent implements OnInit {
   constructor(
     public store: Store<AppState>
   ) {
-    this.comments$ = this.store.select(selectComments)
+    this.comments$ = this.store.select(selectComments);
   }
 
   ngOnInit(): void {

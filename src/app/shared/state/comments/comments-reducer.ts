@@ -1,7 +1,7 @@
 import {CommentModel} from "../../model/comment.model";
 import {createReducer, on} from "@ngrx/store";
 import {
-  addComment,
+  addComment, addReply,
   downvoteComment,
   removeComment,
   setComments,
@@ -16,9 +16,54 @@ export const initialState: CommentModel[] = [];
 export const commentsReducer = createReducer(
   initialState,
   on(setComments, (state, {comments}) => comments),
-  on(addComment, (state, comment) => [...state, comment]),
-  on(removeComment, (state, {id}) =>  state.filter(comment => comment.id !== id)),
-  on(updateComment, (state, {id, changes}) => state.map(comment => comment.id === id ? changes : comment)),
+  on(addComment, (state, {comment}) => [...state, comment]),
+  on(addReply, (state, {commentId, reply}) => {
+    return state.map(comment => {
+      if (comment.id === commentId) {
+        return {
+          ...comment,
+          replies: [...comment.replies, reply]
+        };
+      }
+      return comment;
+    });
+  }),
+  on(removeComment, (state, {id}) =>  {
+    return state.reduce((comments: CommentModel[], comment) => {
+      if(comment.id !== id) {
+        comments.push({
+          ...comment,
+          replies: comment.replies.filter(reply => reply.id !== id)
+        });
+      }
+      return comments;
+    }, []);
+  }),
+  on(updateComment, (state, {id, updatedComment}) => {
+    return state.map(comment => {
+      if(comment.id === id) {
+        return {
+          ...comment,
+          content: updatedComment,
+          createdAt: new Date()
+        };
+      } else {
+        return {
+          ...comment,
+          replies: comment.replies.map(reply => {
+            if(reply.id === id) {
+              return {
+                ...reply,
+                content: updatedComment,
+                createdAt: new Date()
+              };
+            }
+            return reply;
+          })
+        }
+      }
+    })
+  }),
   on(upvoteComment, (state, {id}) => {
     return state.map(comment => {
       if (comment.id === id) {

@@ -1,4 +1,4 @@
-<div class="message-container" *ngIf="message">
+<div class="message-container" *ngIf="message && parentComment">
   <div class="voting-section large-display">
     <ng-container [ngTemplateOutlet]="votingSection"></ng-container>
   </div>
@@ -18,7 +18,7 @@
       </div>
     </div>
     <div class="message-body" *ngIf="!editToggle">
-<!--      <span class="reply-to">@{{message.replyingTo}}</span>-->
+      <span class="reply-to" *ngIf="$any(message).replyingTo">@{{$any(message).replyingTo}} &nbsp;</span>
       <span class="message-text">{{message.content}}</span>
     </div>
     <div *ngIf="editToggle">
@@ -27,7 +27,7 @@
         <textarea matInput placeholder="Enter Message" [rows]="4" [(ngModel)]="editMessage"></textarea>
       </mat-form-field>
       <div class="update">
-        <button mat-flat-button color="primary" (click)="updateMessage()">UPDATE</button>
+        <button mat-flat-button color="primary" (click)="updateMessage(message.id)">UPDATE</button>
       </div>
     </div>
     <div class="mobile-display">
@@ -36,18 +36,19 @@
       </div>
       <div class="message-action">
         <ng-container [ngTemplateOutlet]="messageActions"></ng-container>
+      </div>
     </div>
   </div>
 </div>
 
 <ng-template #messageActions>
-  <div *ngIf="message">
-    <div class="action-button" *ngIf="!(isCurrentUser(message.user.username) | async)" (click)="reply()">
-      <mat-icon aria-label="Reply" color="primary" [fontIcon]="'reply'"></mat-icon>
+  <div *ngIf="message && parentComment">
+    <div class="action-button" *ngIf="!(isCurrentUser(message.user.username) | async)" (click)="reply(message, parentComment)">
+      <mat-icon class="reply" aria-label="Reply" color="primary" [fontIcon]="'reply'"></mat-icon>
       Reply
     </div>
     <div class="inline-flex" *ngIf="(isCurrentUser(message.user.username) | async)">
-      <div class="action-button warn" (click)="delete()" *ngIf="editToggle">
+      <div class="action-button warn" (click)="delete(message.id)" *ngIf="editToggle">
         <mat-icon aria-label="Edit" color="warn" [fontIcon]="'delete'"></mat-icon>
         Delete
       </div>
@@ -64,9 +65,19 @@
     <div>
       <mat-icon class="upvote" [ngClass]="{'voted': message.currentUserUpvoted}" aria-label="Upvote" color="primary" [fontIcon]="'add'" (click)="upvoteMessage(message.id)"></mat-icon>
     </div>
-    <div>{{message.score}}</div>
+    <div class="message-score">{{message.score}}</div>
     <div>
       <mat-icon class="downvote" [ngClass]="{'voted': message.currentUserDownvoted}" aria-label="Downvote" color="primary" [fontIcon]="'remove'" (click)="downvoteMessage(message.id)"></mat-icon>
     </div>
   </div>
 </ng-template>
+
+<div class="position-relative" *ngIf="showReplyComment || showReplyReply">
+  <div class="reply-vertical-line">
+    <div></div>
+  </div>
+  <div class="reply-container">
+    <new-comment *ngIf="showReplyComment" [parentComment]="parentComment"></new-comment>
+    <new-comment *ngIf="showReplyReply" [parentComment]="parentComment" [parentReply]="(message| as: ReplyModal)"></new-comment>
+  </div>
+</div>

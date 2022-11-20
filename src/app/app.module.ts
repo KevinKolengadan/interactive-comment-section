@@ -17,13 +17,20 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
+import {DeleteDialog} from "./shared/dialog/delete-dialog/delete-dialog";
+import {MatDialogModule} from "@angular/material/dialog";
+import { NewCommentComponent } from './new-comment/new-comment.component';
+import {AsPipe} from "./shared/pipe/As.pipe";
 
 @NgModule({
   declarations: [
     AppComponent,
     MessageComponent,
     TimeAgePipe,
-    CommentsComponent
+    AsPipe,
+    CommentsComponent,
+    DeleteDialog,
+    NewCommentComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +45,8 @@ import {MatButtonModule} from "@angular/material/button";
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
-    MatButtonModule
+    MatButtonModule,
+    MatDialogModule
   ],
   providers: [
     CommentService,

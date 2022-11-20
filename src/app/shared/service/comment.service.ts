@@ -39,7 +39,7 @@ export class CommentService {
       let replies = [];
       if(currentCommentId < comment.id) currentCommentId = comment.id;
       for(let reply of comment.replies) {
-        if(currentCommentId < reply.id) currentCommentId = reply.id;
+        if (currentCommentId < reply.id) currentCommentId = reply.id;
         replies.push(new Reply(reply.id, reply.content, new Date(), reply.score, reply.replyingTo, reply.user));
       }
       comments.push(new Comment(comment.id, comment.content, new Date(), comment.score, comment.user, replies));
@@ -47,6 +47,12 @@ export class CommentService {
     this.localStorageService.saveData('comments', comments);
     this.localStorageService.saveData('currentCommentId', currentCommentId);
     return comments;
+  }
+
+  getNewCommentId() {
+    let newCommentId =  this.localStorageService.getData('currentCommentId') + 1;
+    this.localStorageService.saveData('currentCommentId', newCommentId);
+    return newCommentId;
   }
 
 
@@ -104,5 +110,66 @@ export class CommentService {
         score: message.score + score
       }
     }
+  }
+
+  updateMessage(messageId: number, editMessage: string) {
+    this.store.dispatch({type: '[Comment] Update Comment', id: messageId, updatedComment: editMessage});
+    this.store.select(selectComments).pipe(take(1)).subscribe(comments => {
+      this.localStorageService.saveData('comments', comments);
+    });
+  }
+
+  deleteMessage(messageId: number) {
+    this.store.dispatch({type: '[Comment] Remove Comment', id: messageId});
+    this.store.select(selectComments).pipe(take(1)).subscribe(comments => {
+      this.localStorageService.saveData('comments', comments);
+    });
+  }
+
+  addComment(message: string) {
+    let comment = new Comment(
+      this.getNewCommentId(),
+      message,
+      new Date(),
+      0,
+      this.localStorageService.getData('currentUser'),
+      []
+    );
+    this.store.dispatch({type: '[Comment] Add Comment', comment});
+    this.store.select(selectComments).pipe(take(1)).subscribe(comments => {
+      this.localStorageService.saveData('comments', comments);
+    });
+  }
+
+  addCommentReply(comment: CommentModel, message: string) {
+    let reply = new Reply(
+      this.getNewCommentId(),
+      message,
+      new Date(),
+      0,
+      comment.user.username,
+      this.localStorageService.getData('currentUser')
+    );
+    this.store.dispatch({type: '[Comment] Add Reply', commentId:comment.id, reply});
+    this.store.select(selectComments).pipe(take(1)).subscribe(comments => {
+      this.localStorageService.saveData('comments', comments);
+    });
+
+  }
+
+  addReply(parentComment: CommentModel, parentReply: ReplyModal, message: string) {
+    let reply = new Reply(
+      this.getNewCommentId(),
+      message,
+      new Date(),
+      0,
+      parentReply.user.username,
+      this.localStorageService.getData('currentUser')
+    );
+    this.store.dispatch({type: '[Comment] Add Reply', commentId: parentComment.id, reply});
+    this.store.select(selectComments).pipe(take(1)).subscribe(comments => {
+      this.localStorageService.saveData('comments', comments);
+    });
+
   }
 }

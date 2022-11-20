@@ -1,0 +1,14 @@
+<div class="new-comment-container" *ngIf="($currentUser$ | async) as currentUser">
+  <div>
+    <img class="profile-image" src="assets/{{currentUser.image.png}}">
+  </div>
+  <div>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Add a comment...</mat-label>
+      <textarea matInput placeholder="Add a comment..." [rows]="4" [(ngModel)]="message"></textarea>
+    </mat-form-field>
+  </div>
+  <div class="button-container">
+    <button mat-flat-button color="primary" (click)="addComment()">SEND</button>
+  </div>
+</div>
