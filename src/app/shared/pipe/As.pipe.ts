@@ -1,5 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
+/**
+ * Pipe to validate the type of the value
+ */
 @Pipe({
   name: 'as',
   pure: true,

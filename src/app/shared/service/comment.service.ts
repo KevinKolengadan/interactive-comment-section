@@ -18,6 +18,9 @@ export class CommentService {
     private localStorageService: LocalStorageService
   ) { }
 
+  /**
+   * Initialize the comments from local storage or from the data.json file if local storage is empty
+   */
   public initializeComments() {
     let comments = this.localStorageService.getData('comments');
     if(!comments) {
@@ -32,6 +35,9 @@ export class CommentService {
     this.store.dispatch({type: '[User] Set User', user: currentUser});
   }
 
+  /**
+   * Load the initial comments from the data.json file
+   */
   private loadInitialComments() {
     let comments = [];
     let currentCommentId = 0;
@@ -49,6 +55,10 @@ export class CommentService {
     return comments;
   }
 
+  /**
+   * @private
+   * get the next comment id and increment the currentCommentId in local storage
+   */
   getNewCommentId() {
     let newCommentId =  this.localStorageService.getData('currentCommentId') + 1;
     this.localStorageService.saveData('currentCommentId', newCommentId);
@@ -56,6 +66,10 @@ export class CommentService {
   }
 
 
+  /**
+   * upvote a comment/reply using the comment/reply id
+   * @param messageId
+   */
   upvoteMessage(messageId: number) {
     this.store.dispatch({type: '[Comment] Upvote Comment', id: messageId});
     this.store.select(selectComments).pipe(take(1)).subscribe(comments => {
@@ -63,6 +77,11 @@ export class CommentService {
     });
 
   }
+
+  /**
+   * downvote a comment/reply using the comment/reply id
+   * @param messageId
+   */
   downvoteMessage(messageId: number) {
     this.store.dispatch({type: '[Comment] Downvote Comment', id: messageId});
     this.store.select(selectComments).pipe(take(1)).subscribe(comments => {
@@ -70,6 +89,11 @@ export class CommentService {
     });
   }
 
+  /**
+   * @static
+   * logic to upvote a comment/reply
+   * @param message
+   */
   public static upvote(message: CommentModel | ReplyModal) {
     let score = 0;
     message.currentUserUpvoted? score-- : score++;
@@ -91,6 +115,11 @@ export class CommentService {
     }
   }
 
+  /**
+   * @static
+   * logic to downvote a comment/reply
+   * @param message
+   */
   public static downvote(message: CommentModel | ReplyModal) {
     let score = 0;
     message.currentUserDownvoted? score++ : score--;
@@ -112,6 +141,11 @@ export class CommentService {
     }
   }
 
+  /**
+   * Update the comment/reply with the new message
+   * @param messageId
+   * @param editMessage
+   */
   updateMessage(messageId: number, editMessage: string) {
     this.store.dispatch({type: '[Comment] Update Comment', id: messageId, updatedComment: editMessage});
     this.store.select(selectComments).pipe(take(1)).subscribe(comments => {
@@ -119,6 +153,10 @@ export class CommentService {
     });
   }
 
+  /**
+   * Delete a comment/reply using the comment/reply id
+   * @param messageId
+   */
   deleteMessage(messageId: number) {
     this.store.dispatch({type: '[Comment] Remove Comment', id: messageId});
     this.store.select(selectComments).pipe(take(1)).subscribe(comments => {
@@ -126,6 +164,10 @@ export class CommentService {
     });
   }
 
+  /**
+   * Add a new comment
+   * @param message
+   */
   addComment(message: string) {
     let comment = new Comment(
       this.getNewCommentId(),
@@ -141,6 +183,11 @@ export class CommentService {
     });
   }
 
+  /**
+   * Add a new reply to a comment
+   * @param comment
+   * @param message
+   */
   addCommentReply(comment: CommentModel, message: string) {
     let reply = new Reply(
       this.getNewCommentId(),
@@ -157,6 +204,12 @@ export class CommentService {
 
   }
 
+  /**
+   * Add a new reply to a reply
+   * @param parentComment
+   * @param parentReply
+   * @param message
+   */
   addReply(parentComment: CommentModel, parentReply: ReplyModal, message: string) {
     let reply = new Reply(
       this.getNewCommentId(),

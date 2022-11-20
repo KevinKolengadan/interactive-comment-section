@@ -33,19 +33,33 @@ export class MessageComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Function to check if the current user is the author of the message
+   * @param username
+   */
   isCurrentUser(username: string): Observable<boolean> {
     return this.store.select(isCurrentUsername(username));
   }
 
+  /**
+   * Function to Upvote a comment or reply
+   * @param messageId
+   */
   upvoteMessage(messageId: number): void {
     this.commentService.upvoteMessage(messageId);
   }
 
+  /**
+   * Function to Downvote a comment or reply
+   * @param messageId
+   */
   downvoteMessage(messageId: number): void {
     this.commentService.downvoteMessage(messageId);
   }
 
-
+  /**
+   * Function to show edit window a comment or reply
+   */
   edit() {
     if(this.editToggle) {
       this.editToggle = false;
@@ -56,6 +70,10 @@ export class MessageComponent implements OnInit {
     }
   }
 
+  /**
+   * Function to delete a comment or reply
+   * @param messageId
+   */
   delete(messageId: number) {
     const dialogRef = this.dialog.open(DeleteDialog, {
     });
@@ -67,10 +85,19 @@ export class MessageComponent implements OnInit {
     });
   }
 
+  /**
+   * Function to edit a comment or reply
+   * @param messageId
+   */
   updateMessage(messageId: number) {
     this.commentService.updateMessage(messageId, this.editMessage);
   }
 
+  /**
+   * Function to show a new reply window
+   * @param message
+   * @param parentComment
+   */
   reply(message: CommentModel | ReplyModal, parentComment: CommentModel) {
     if(this.showReplyComment || this.showReplyReply) {
       this.showReplyComment = false;

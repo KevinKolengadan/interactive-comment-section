@@ -6,7 +6,7 @@
         <div></div>
       </div>
       <div class="reply-container">
-        <div class="comment-container"  *ngFor="let reply of comment.replies">
+        <div class="comment-container"  *ngFor="let reply of sortReplies(comment.replies)">
           <message [message]="reply" [parentComment]="comment"></message>
         </div>
       </div>

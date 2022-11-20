@@ -25,6 +25,9 @@ export class NewCommentComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Function to add a new comment, reply or reply to a reply
+   */
   addComment() {
     if(!this.parentComment) {
       this.commentService.addComment(this.message);
